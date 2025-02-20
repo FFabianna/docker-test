@@ -1,4 +1,4 @@
-name: Build and Push React App with GHCR
+name: Image
 
 on:
   push:
@@ -6,37 +6,25 @@ on:
       - main 
 
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
+   build:
+     runs-on: ubuntu-latest
+     steps:
+     - name: Checkout Repository
+       uses: actions/checkout@v4
 
-    steps:
-      - name: Checkout del repositorio
-        uses: actions/checkout@v4
+     - name: Set up Docker Buildx
+       uses: docker/setup-buildx-action@v3
 
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18 
+     - name: Log in to Docker Hub
+       uses: docker/login-action@v2
+       with:
+         username: ${{ secrets.DOCKER_SC1 }}
+         password: ${{ secrets.DOCKER_SC2 }}
 
-      - name: Instalar dependencias de React
-        run: npm install
-
-      - name: Construir la aplicación React
-        run: npm run build 
-
-      - name: Configurar Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Iniciar sesión en GitHub Container Registry (GHCR)
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Construir y enviar la imagen Docker a GHCR
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ghcr.io/ffabianna/docker-test:latest
+     - name: Build and Push Docker Image
+       uses: docker/build-push-action@v5
+       with:
+         context: .
+         file: ./Dockerfile
+         push: true
+         tags: ${{ secrets.DOCKER_SC1 }}/node-app:latest
