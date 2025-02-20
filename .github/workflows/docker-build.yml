@@ -18,8 +18,8 @@ jobs:
      - name: Log in to Docker Hub
        uses: docker/login-action@v2
        with:
-         username: ${{ secrets.SC1 }}
-         password: ${{ secrets.SC2 }}
+         username: ${{ secrets.USERNAME }}
+         password: ${{ secrets.PASSWORD }}
 
      - name: Build and Push Docker Image
        uses: docker/build-push-action@v5
@@ -27,4 +27,4 @@ jobs:
          context: .
          file: ./Dockerfile
          push: true
-         tags: ${{ secrets.SC1 }}/node-app:latest
+         tags: ${{ secrets.USERNAME }}/node-app:latest
